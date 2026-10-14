@@ -45,6 +45,7 @@
     ringRadius: false
     safeJumpDepth: false
     startAngleDegrees: false
+    trailMaterial: false
     trailSegmentCount: false
     trailSegmentLength: false
     trailThickness: false
@@ -77,6 +78,7 @@
       trailThickness: 0.022000
       horizontalRadiusMultiplier: 1.780000
       ringMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
+      trailMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}
@@ -101,3 +103,4 @@
     - // @input float trailThickness = 0.028
     - // @input float horizontalRadiusMultiplier = 1.78
     - // @input Asset.Material ringMaterial
+    - // @input Asset.Material trailMaterial

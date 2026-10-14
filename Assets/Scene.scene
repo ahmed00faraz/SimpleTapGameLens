@@ -227,14 +227,14 @@
     []
   Name: Text
   Enabled: true
-  RenderOrder: 0
+  RenderOrder: 20
   StretchMode: Stretch
   VerticalAlignment: Center
   HorizontalAlignment: Center
   MeshShadowMode: None
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
-  Text: TAP TO RESTART
+  Text: "RING RUNNER\nTAP TO START"
   CustomMaterial: !<reference> 00000000-0000-0000-0000-000000000000
   Editable: false
   ShowEditingPreview: true
@@ -320,7 +320,7 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 6d58d62d-e9d0-479d-b5b8-f530ba81a3de
+    - !<reference> 74371679-781a-4fea-b1b8-1f27cbc11e6b
   FlipX: false
   FlipY: false
   RotationAngle: 0
@@ -404,7 +404,7 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 6d58d62d-e9d0-479d-b5b8-f530ba81a3de
+    - !<reference> 95695a2f-84ac-4afd-a70c-6a4d6b9c19b2
   FlipX: false
   FlipY: false
   RotationAngle: 0
@@ -512,13 +512,13 @@
   Children:
     - !<own> e1b7624e-ebd8-4cbc-82e8-094dae92a16f
   Components:
-    []
+    - !<own> b7e1a003-3333-4a03-8003-000000000010
 - !<Image/821b16d9-089f-41e1-90a7-0b10fc0c2ee0>
   PrefabRemaps:
     []
   Name: Image
   Enabled: true
-  RenderOrder: 0
+  RenderOrder: -1
   StretchMode: Fit
   VerticalAlignment: Center
   HorizontalAlignment: Center
@@ -526,7 +526,7 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 6d58d62d-e9d0-479d-b5b8-f530ba81a3de
+    - !<reference> 06bfe87b-599f-4566-a4b5-c2dad1d25e4e
   FlipX: false
   FlipY: false
   RotationAngle: 0
@@ -542,36 +542,43 @@
     hazardOne: true
     hazardTwo: true
     hazardThree: true
+    ring: true
     ringRadius: true
+    startAngleDegrees: true
     playerSpeed: true
     hazardSpeed: true
     jumpDepth: true
     jumpDuration: true
     collisionAngleDegrees: true
-    collisionRadius: true
     safeJumpDepth: true
     demonSize: true
+    ringThickness: true
+    horizontalRadiusMultiplier: true
     ringMaterial: true
+    trailMaterial: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       player: !<reference.SceneObject> 2a5cd79e-3b1f-4503-81c8-a6ea051edd57
-      hazardOne: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
-      hazardTwo: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
-      hazardThree: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
-      obstacle: !<reference.SceneObject> 15d8049c-1f7b-4129-aff4-5b59889cd3d4
+      hazardOne: !<reference.SceneObject> 15d8049c-1f7b-4129-aff4-5b59889cd3d4
+      hazardTwo: !<reference.SceneObject> b7e1a001-1111-4a01-8001-000000000010
+      hazardThree: !<reference.SceneObject> b7e1a002-2222-4a02-8002-000000000010
       gameOverUI: !<reference.SceneObject> cf88bd2f-c010-4e83-8ad2-f45d9fcd80c4
+      ring: !<reference.SceneObject> 739583c6-0b69-4538-94b2-a07b8d2ab5a0
       ringRadius: 0.350000
+      startAngleDegrees: !<float> 180.000000
       playerSpeed: 1.800000
       hazardSpeed: 0.700000
       jumpDepth: 0.130000
       jumpDuration: 0.500000
       collisionAngleDegrees: !<float> 11.000000
-      collisionRadius: 0.055000
       safeJumpDepth: 0.065000
       demonSize: 0.160000
-      ringMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
+      ringThickness: 0.050000
+      horizontalRadiusMultiplier: 1.780000
+      ringMaterial: !<reference.Material> 06bfe87b-599f-4566-a4b5-c2dad1d25e4e
+      trailMaterial: !<reference.Material> 40fd8007-2d47-490d-8e19-97a79e70b6ed
   ScriptTypes:
     "":
       {}
@@ -624,6 +631,8 @@
     - !<own> 739583c6-0b69-4538-94b2-a07b8d2ab5a0
     - !<own> 2a5cd79e-3b1f-4503-81c8-a6ea051edd57
     - !<own> 15d8049c-1f7b-4129-aff4-5b59889cd3d4
+    - !<own> b7e1a001-1111-4a01-8001-000000000010
+    - !<own> b7e1a002-2222-4a02-8002-000000000010
     - !<own> cf88bd2f-c010-4e83-8ad2-f45d9fcd80c4
   Components:
     - !<own> 0136e686-5a8c-4c76-ba67-37c5a48b2edc
@@ -634,7 +643,7 @@
     []
   Name: GameOver UI
   Enabled: false
-  Layers: 1
+  Layers: 1048576
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
