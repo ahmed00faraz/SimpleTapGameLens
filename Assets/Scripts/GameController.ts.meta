@@ -1,0 +1,103 @@
+- !<AssetImportMetadata/9b14844e-1fc5-4dcf-bb51-88cf671b7b50>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> e8c24651-349a-403c-a09d-c2af4f0181f9
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> e8c24651-349a-403c-a09d-c2af4f0181f9
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> bca33c73-f695-4be8-b9a3-82f0e9dc66b2
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/bca33c73-f695-4be8-b9a3-82f0e9dc66b2>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: d6b935f6-7c8b-4ee7-b548-5a04f7f3467d
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    collisionAngleDegrees: false
+    collisionRadius: false
+    demonSize: false
+    gameOverUI: false
+    hazardOne: false
+    hazardSpeed: false
+    hazardThree: false
+    hazardTwo: false
+    jumpDepth: false
+    jumpDuration: false
+    obstacle: false
+    player: false
+    playerSpeed: false
+    ringMaterial: false
+    ringRadius: false
+    safeJumpDepth: false
+    startAngleDegrees: false
+    trailSegmentCount: false
+    trailSegmentLength: false
+    trailThickness: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - player: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      hazardOne: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      hazardTwo: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      hazardThree: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      obstacle: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      gameOverUI: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      ringRadius: 0.350000
+      startAngleDegrees: !<float> 180.000000
+      playerSpeed: 1.800000
+      hazardSpeed: 0.700000
+      jumpDepth: 0.130000
+      jumpDuration: 0.500000
+      collisionAngleDegrees: !<float> 11.000000
+      collisionRadius: 0.055000
+      safeJumpDepth: 0.065000
+      demonSize: 0.160000
+      trailSegmentCount: !<float> 64.000000
+      trailSegmentLength: 0.052000
+      trailThickness: 0.022000
+      ringMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input SceneObject player
+    - // @input SceneObject hazardOne
+    - // @input SceneObject hazardTwo
+    - // @input SceneObject hazardThree
+    - // @input SceneObject obstacle
+    - // @input SceneObject gameOverUI
+    - // @input float ringRadius = 0.35
+    - // @input float startAngleDegrees = 60
+    - // @input float playerSpeed = 1.8
+    - // @input float hazardSpeed = 0.7
+    - // @input float jumpDepth = 0.13
+    - // @input float jumpDuration = 0.42
+    - // @input float collisionAngleDegrees = 11
+    - // @input float collisionRadius = 0.065
+    - // @input float safeJumpDepth = 0.065
+    - // @input float demonSize = 0.16
+    - // @input float trailSegmentCount = 64
+    - // @input float trailSegmentLength = 0.052
+    - // @input float trailThickness = 0.022
+    - // @input Asset.Material ringMaterial
