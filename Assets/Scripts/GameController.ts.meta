@@ -32,6 +32,7 @@
     collisionRadius: false
     demonSize: false
     gameOverUI: false
+    hazardColor: false
     hazardOne: false
     hazardSpeed: false
     hazardThree: false
@@ -40,12 +41,14 @@
     jumpDepth: false
     jumpDuration: false
     player: false
+    playerColor: false
     playerSpeed: false
     ringMaterial: false
     ringRadius: false
     safeJumpDepth: false
     startAngleDegrees: false
-    trailMaterial: false
+    trackColor: false
+    trailColor: false
     trailSegmentCount: false
     trailSegmentLength: false
     trailThickness: false
@@ -73,12 +76,15 @@
       collisionRadius: 0.055000
       safeJumpDepth: 0.065000
       demonSize: 0.160000
-      trailSegmentCount: !<float> 64.000000
-      trailSegmentLength: 0.052000
-      trailThickness: 0.022000
+      trailSegmentCount: !<float> 96.000000
+      trailSegmentLength: 0.040000
+      trailThickness: 0.028000
       horizontalRadiusMultiplier: 1.780000
       ringMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
-      trailMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
+      playerColor: !<Vec4> {x: 1.000000, y: 0.200000, z: 0.800000, w: 1.000000}
+      hazardColor: !<Vec4> {x: 1.000000, y: 0.250000, z: 0.200000, w: 1.000000}
+      trailColor: !<Vec4> {x: 1.000000, y: 0.200000, z: 0.800000, w: 1.000000}
+      trackColor: !<Vec4> {x: 0.300000, y: 0.300000, z: 0.350000, w: 1.000000}
   ScriptTypes:
     -
       {}
@@ -103,4 +109,7 @@
     - // @input float trailThickness = 0.028
     - // @input float horizontalRadiusMultiplier = 1.78
     - // @input Asset.Material ringMaterial
-    - // @input Asset.Material trailMaterial
+    - "// @input vec4 playerColor = {1,0.2,0.8,1}"
+    - "// @input vec4 hazardColor = {1,0.25,0.2,1}"
+    - "// @input vec4 trailColor = {1,0.2,0.8,1}"
+    - "// @input vec4 trackColor = {0.3,0.3,0.35,1}"

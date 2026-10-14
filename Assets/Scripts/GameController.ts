@@ -1,109 +1,73 @@
 // Ring Runner: polar-motion runner on a fixed ring. The player jumps inward
 // on a parabolic arc; thorn demons circle the ring in the opposite direction.
-// Progress is a pink arc that grows from spawn until the ring is fully pink.
+// Progress is shown as a pink trail that fills the ring as the player travels.
 @component
 export class GameController extends BaseScriptComponent {
-  @input
-  player: SceneObject;
+  // --- GAMEPLAY & SPEEDS ---
+  @input playerSpeed: number = 1.0; // Reduced from 1.8 for fair reaction time
+  @input hazardSpeed: number = 0.4; // Reduced from 0.7
+  @input jumpDuration: number = 0.65; // Slightly longer air-time
+  @input jumpDepth: number = 0.13;
+  @input startAngleDegrees: number = 60.0;
 
-  @input
-  hazardOne?: SceneObject;
+  // --- SIZES & HITBOXES ---
+  @input ringRadius: number = 0.35;
+  @input demonSize: number = 0.16;
+  @input collisionRadius: number = 0.055;
+  @input safeJumpDepth: number = 0.065;
+  @input collisionAngleDegrees: number = 15.0; // Slightly more forgiving hitbox
+  @input horizontalRadiusMultiplier: number = 1.78;
 
-  @input
-  hazardTwo?: SceneObject;
+  // --- TRAIL CONFIGURATION ---
+  @input trailSegmentCount: number = 96;
+  @input trailSegmentLength: number = 0.04;
+  @input trailThickness: number = 0.028;
 
-  @input
-  hazardThree?: SceneObject;
+  // --- COLORS ---
+  @input playerColor: vec4 = new vec4(1.0, 0.2, 0.8, 1.0);
+  @input hazardColor: vec4 = new vec4(1.0, 0.25, 0.2, 1.0);
+  @input trailColor: vec4 = new vec4(1.0, 0.2, 0.8, 1.0); // Pink when covered
+  @input trackColor: vec4 = new vec4(0.3, 0.3, 0.35, 1.0); // Dim gray when unpainted
 
-  @input
-  gameOverUI: SceneObject = null;
-
-  @input
-  ring?: SceneObject;
-
-  @input
-  ringRadius: number = 0.35;
-
-  @input
-  startAngleDegrees: number = 180.0;
-
-  @input
-  playerSpeed: number = 1.8;
-
-  @input
-  hazardSpeed: number = 0.7;
-
-  @input
-  jumpDepth: number = 0.13;
-
-  @input
-  jumpDuration: number = 0.5;
-
-  @input
-  collisionAngleDegrees: number = 11.0;
-
-  // A jump at least this deep (inward from the ring) clears thorns.
-  @input
-  safeJumpDepth: number = 0.065;
-
-  // Diameter of each demon in the ring's parent anchor space.
-  @input
-  demonSize: number = 0.16;
-
-  @input
-  ringThickness: number = 0.05;
-
-  // Portrait ScreenTransforms use a narrower X axis than Y axis.
-  @input
-  horizontalRadiusMultiplier: number = 1.78;
-
-  // Material with a float input named "coverage" (0..1). Optional.
-  @input
-  ringMaterial?: Material;
-
-  @input
-  trailMaterial?: Material;
+  // --- SCENE REFERENCES ---
+  @input player: SceneObject;
+  @input hazardOne?: SceneObject;
+  @input hazardTwo?: SceneObject;
+  @input hazardThree?: SceneObject;
+  @input gameOverUI: SceneObject = null;
+  @input ringMaterial?: Material;
 
   private readonly fullCircle = Math.PI * 2;
   private readonly hazardOffsets = [0, (Math.PI * 2) / 3, (Math.PI * 4) / 3];
   private readonly degToRad = Math.PI / 180;
   private readonly radToDeg = 180 / Math.PI;
-  private readonly ringTexSize = 128;
-  private readonly unpaintedRgba = [235, 38, 46, 255];
-  private readonly paintedRgba = [255, 89, 184, 255];
 
   private hazards: SceneObject[] = [];
+  private trailSegments: SceneObject[] = [];
+  private segmentCovered: boolean[] = [];
+  private trailImages: (Image | null)[] = [];
+  private trackMaterial: Material = null;
+  private paintMaterial: Material = null;
+
+  private coveredCount = 0;
   private playerAngle = 0;
   private hazardRotation = 0;
   private isJumping = false;
   private jumpElapsed = 0;
-  private travelled = 0;
-  private coverage = 0;
-  private lastDrawnCoverage = -1;
   private state: "ready" | "playing" | "gameOver" | "complete" = "ready";
 
+  // Cached ScreenTransforms and Text
   private playerTransform: ScreenTransform = null;
-  private playerLocalTransform: Transform = null;
   private hazardTransforms: ScreenTransform[] = [];
-  private hazardLocalTransforms: Transform[] = [];
-  private ringTransform: ScreenTransform = null;
-  private ringImage: Image = null;
   private gameOverText: Text = null;
-
-  private ringPixels: Uint8Array = null;
-  private ringTexture: Texture = null;
-  private useProceduralRing = false;
-  private coverageSegments: SceneObject[] = [];
-  private coverageSegmentCount = 64;
 
   onAwake() {
     this.createEvent("OnStartEvent").bind(this.onStart.bind(this));
     this.createEvent("UpdateEvent").bind(this.onUpdate.bind(this));
     this.createEvent("TapEvent").bind(this.onTap.bind(this));
     this.cacheReferences();
+    this.createProgressTrail();
     this.applySizes();
-    this.layoutRing();
-    this.initCoverageVisual();
   }
 
   private onStart() {
@@ -112,60 +76,147 @@ export class GameController extends BaseScriptComponent {
 
   private cacheReferences() {
     this.playerTransform = this.getScreenTransform(this.player);
-    this.playerLocalTransform = this.player ? this.player.getTransform() : null;
+    this.tintEntity(this.player, this.playerColor);
 
     this.hazards = this.collectHazards();
-    this.hazardTransforms = [];
-    this.hazardLocalTransforms = [];
+    this.hazardTransforms = this.hazards.map((hazard) => this.getScreenTransform(hazard));
     for (let index = 0; index < this.hazards.length; index++) {
-      this.hazardTransforms.push(this.getScreenTransform(this.hazards[index]));
-      this.hazardLocalTransforms.push(this.hazards[index].getTransform());
-    }
-
-    const ringObject = this.ring || this.findChildByName("Ring");
-    if (ringObject) {
-      this.ringTransform = this.getScreenTransform(ringObject);
-      this.ringImage = ringObject.getComponentInDescendants("Component.Image") as Image;
-      if (!this.ringMaterial && this.ringImage) {
-        this.ringMaterial = this.ringImage.mainMaterial;
-      }
+      this.tintEntity(this.hazards[index], this.hazardColor);
     }
 
     if (this.gameOverUI) {
       this.gameOverText = this.gameOverUI.getComponent("Component.Text") as Text;
-    }
-    if (!this.gameOverText) {
-      print("GameController: 'GameOver UI' needs a Text component; title and result messages will not show.");
+    } else {
+      this.createDefaultUI();
     }
   }
 
-  private findChildByName(name: string): SceneObject {
-    const container = this.getSceneObject();
-    for (let index = 0; index < container.getChildrenCount(); index++) {
-      const child = container.getChild(index);
-      if (child.name === name) return child;
-    }
-    return null;
+  private createDefaultUI() {
+    this.gameOverUI = global.scene.createSceneObject("Auto UI");
+    this.gameOverUI.setParent(this.getSceneObject());
+
+    const screenTransform = this.gameOverUI.createComponent("Component.ScreenTransform") as ScreenTransform;
+    screenTransform.anchors.setCenter(vec2.zero());
+    screenTransform.anchors.setSize(new vec2(1, 1));
+
+    this.gameOverText = this.gameOverUI.createComponent("Component.Text") as Text;
+    this.gameOverText.horizontalAlignment = 0; // Center
+    this.gameOverText.verticalAlignment = 1; // Center
+
+    // Default text color and size
+    this.gameOverText.textFill.color = new vec4(1, 1, 1, 1);
+    this.gameOverText.size = 48;
+    this.gameOverText.outlineSettings.fill.color = new vec4(0, 0, 0, 1);
+    this.gameOverText.outlineSettings.size = 0.5;
   }
 
   private collectHazards(): SceneObject[] {
     const assigned = [this.hazardOne, this.hazardTwo, this.hazardThree].filter(
       (object) => !!object
     ) as SceneObject[];
-    if (assigned.length > 0) return assigned;
 
-    const container = this.getSceneObject();
-    const found: SceneObject[] = [];
-    for (let index = 0; index < container.getChildrenCount(); index++) {
-      const child = container.getChild(index);
-      if (child.name.indexOf("Obstacle Demon") === 0) found.push(child);
+    let found = assigned;
+
+    // Fallback: find direct children by name if none assigned
+    if (found.length === 0) {
+      const container = this.getSceneObject();
+      for (let index = 0; index < container.getChildrenCount(); index++) {
+        const child = container.getChild(index);
+        if (child.name.indexOf("Obstacle Demon") === 0) found.push(child);
+      }
     }
+
+    // Auto-clone to ensure exactly 3 hazards exist for the game loop
+    if (found.length > 0 && found.length < 3) {
+      const container = this.getSceneObject();
+      const source = found[0];
+      while (found.length < 3) {
+        const clone = container.copyWholeHierarchy(source);
+        clone.name = "Obstacle Demon Clone";
+        found.push(clone);
+      }
+    }
+
     return found;
+  }
+
+  // Safely finds the Image component wherever it lives (root or child)
+  private getImage(object: SceneObject): Image {
+    if (!object) return null;
+    let img = object.getComponent("Component.Image") as Image;
+    if (!img) img = object.getComponentInDescendants("Component.Image") as Image;
+    return img;
+  }
+
+  private tintEntity(object: SceneObject, color: vec4) {
+    const image = this.getImage(object);
+    if (!image || !image.mainMaterial) return;
+
+    const material = image.mainMaterial.clone();
+    material.mainPass.baseColor = color;
+    image.mainMaterial = material;
   }
 
   private getScreenTransform(object: SceneObject): ScreenTransform {
     if (!object) return null;
     return object.getComponent("Component.ScreenTransform") as ScreenTransform;
+  }
+
+  private makeMaterialCopy(color: vec4, source: SceneObject): Material {
+    const image = this.getImage(source);
+    if (!image || !image.mainMaterial) {
+      print("GameController Error: Could not find Image on source object to copy material.");
+      return null;
+    }
+    const material = image.mainMaterial.clone();
+    material.mainPass.baseColor = color;
+    return material;
+  }
+
+  private createProgressTrail() {
+    if (!this.player || this.trailSegmentCount < 1) return;
+
+    const container = this.getSceneObject();
+    const count = Math.floor(this.trailSegmentCount);
+    const startAngle = this.startAngleDegrees * this.degToRad;
+
+    this.trackMaterial = this.makeMaterialCopy(this.trackColor, this.player);
+    this.paintMaterial = this.makeMaterialCopy(this.trailColor, this.player);
+
+    this.trailImages = [];
+    this.trailSegments = [];
+    this.segmentCovered = [];
+
+    for (let index = 0; index < count; index++) {
+      const segment = container.copyWholeHierarchy(this.player);
+      segment.name = "Progress Trail Segment";
+      segment.enabled = true;
+
+      const transform = this.getScreenTransform(segment);
+      if (transform) {
+        // Clear inherited pixel offsets so the size matches anchor settings exactly
+        transform.offsets.left = 0;
+        transform.offsets.right = 0;
+        transform.offsets.top = 0;
+        transform.offsets.bottom = 0;
+        transform.anchors.setSize(new vec2(this.trailSegmentLength, this.trailThickness));
+      }
+
+      const angle = startAngle + ((index + 0.5) / count) * this.fullCircle;
+      this.placeOnRing(transform, segment, angle, this.ringRadius, true);
+
+      const image = this.getImage(segment);
+      if (image) {
+        (image as any).renderOrder = -1; // Push ring visual behind entities
+        if (this.trackMaterial) image.mainMaterial = this.trackMaterial;
+        this.trailImages.push(image);
+      } else {
+        this.trailImages.push(null);
+      }
+
+      this.trailSegments.push(segment);
+      this.segmentCovered.push(false);
+    }
   }
 
   private onTap() {
@@ -181,20 +232,11 @@ export class GameController extends BaseScriptComponent {
     if (this.state !== "playing") return;
 
     const deltaTime = getDeltaTime();
-    const deltaAngle = this.playerSpeed * deltaTime;
-    this.playerAngle = this.wrapAngle(this.playerAngle + deltaAngle);
+    this.playerAngle = this.wrapAngle(this.playerAngle + this.playerSpeed * deltaTime);
     this.hazardRotation = this.wrapAngle(this.hazardRotation - this.hazardSpeed * deltaTime);
-    this.travelled += deltaAngle;
-    this.coverage = Math.min(1, this.travelled / this.fullCircle);
 
     const playerRadius = this.getPlayerRadius(deltaTime);
-    this.placeOnRing(
-      this.playerTransform,
-      this.playerLocalTransform,
-      this.playerAngle,
-      playerRadius,
-      true
-    );
+    this.placeOnRing(this.playerTransform, this.player, this.playerAngle, playerRadius, true);
     this.placeHazards();
 
     if (this.hasCollided(playerRadius)) {
@@ -202,9 +244,12 @@ export class GameController extends BaseScriptComponent {
       return;
     }
 
+    if (!this.isJumping) {
+      this.paintSegmentAt(this.playerAngle);
+    }
     this.updateRingCoverage();
 
-    if (this.coverage >= 1) {
+    if (this.trailSegments.length > 0 && this.coveredCount >= this.trailSegments.length) {
       this.state = "complete";
       this.showMessage("RING COMPLETE!\nTAP TO RESTART");
     }
@@ -230,7 +275,7 @@ export class GameController extends BaseScriptComponent {
     for (let index = 0; index < this.hazards.length; index++) {
       this.placeOnRing(
         this.hazardTransforms[index],
-        this.hazardLocalTransforms[index],
+        this.hazards[index],
         this.wrapAngle(this.hazardRotation + this.hazardOffsets[index]),
         this.ringRadius,
         false
@@ -240,6 +285,7 @@ export class GameController extends BaseScriptComponent {
 
   private hasCollided(playerRadius: number): boolean {
     if (this.ringRadius - playerRadius >= this.safeJumpDepth) return false;
+    if (Math.abs(playerRadius - this.ringRadius) > this.collisionRadius) return false;
 
     const angularThreshold = this.collisionAngleDegrees * this.degToRad;
     for (let index = 0; index < this.hazards.length; index++) {
@@ -251,152 +297,44 @@ export class GameController extends BaseScriptComponent {
 
   private placeOnRing(
     transform: ScreenTransform,
-    localTransform: Transform,
+    object: SceneObject,
     angle: number,
     radius: number,
     isPlayer: boolean
   ) {
-    if (!transform) return;
+    if (!transform || !object) return;
+
+    transform.offsets.left = 0;
+    transform.offsets.right = 0;
+    transform.offsets.top = 0;
+    transform.offsets.bottom = 0;
 
     transform.anchors.setCenter(
       new vec2(Math.cos(angle) * radius * this.horizontalRadiusMultiplier, Math.sin(angle) * radius)
     );
-    if (!localTransform) return;
-    const rotationRad = angle + (isPlayer ? Math.PI / 2 : -Math.PI / 2);
-    localTransform.setLocalRotation(quat.fromEulerAngles(0, 0, rotationRad));
-  }
-
-  private layoutRing() {
-    if (!this.ringTransform) return;
-    const pad = this.ringThickness * 0.5 + 0.02;
-    this.ringTransform.anchors.setCenter(new vec2(0, 0));
-    this.ringTransform.anchors.setSize(
-      new vec2(
-        (this.ringRadius + pad) * 2 * this.horizontalRadiusMultiplier,
-        (this.ringRadius + pad) * 2
-      )
-    );
-  }
-
-  private initCoverageVisual() {
-    const provider = (global as any).ProceduralTextureProvider;
-    if (provider && this.ringImage) {
-      try {
-        this.ringPixels = new Uint8Array(this.ringTexSize * this.ringTexSize * 4);
-        this.ringTexture = provider.create(this.ringTexSize, this.ringTexSize, Colorspace.RGBA);
-        this.useProceduralRing = !!this.ringTexture;
-        if (this.useProceduralRing) {
-          this.paintProceduralRing(0);
-          this.applyRingTexture();
-          return;
-        }
-      } catch (error) {
-        this.useProceduralRing = false;
-      }
-    }
-    this.createCoverageSegments();
-  }
-
-  private applyRingTexture() {
-    if (!this.ringImage || !this.ringTexture) return;
-    const material = this.ringMaterial || this.ringImage.mainMaterial;
-    if (!material) return;
-    const pass = material.mainPass as any;
-    pass.baseTex = this.ringTexture;
-    pass.coverage = this.coverage;
-  }
-
-  private paintProceduralRing(coverage: number) {
-    const n = this.ringTexSize;
-    const pixels = this.ringPixels;
-    const start = this.startAngleDegrees * this.degToRad;
-    const outer = 0.49;
-    const inner = Math.max(0.05, outer - this.ringThickness / Math.max(0.001, this.ringRadius * 2) * 0.5);
-    const red = this.unpaintedRgba;
-    const pink = this.paintedRgba;
-
-    for (let y = 0; y < n; y++) {
-      for (let x = 0; x < n; x++) {
-        const i = (y * n + x) * 4;
-        const dx = (x + 0.5) / n - 0.5;
-        const dy = 0.5 - (y + 0.5) / n;
-        const radius = Math.sqrt(dx * dx + dy * dy);
-        if (radius < inner || radius > outer) {
-          pixels[i] = 0;
-          pixels[i + 1] = 0;
-          pixels[i + 2] = 0;
-          pixels[i + 3] = 0;
-          continue;
-        }
-        const angle = Math.atan2(dy, dx);
-        const offset = this.wrapAngle(angle - start);
-        const painted = coverage > 0 && offset / this.fullCircle <= coverage + 0.0001;
-        const color = painted ? pink : red;
-        pixels[i] = color[0];
-        pixels[i + 1] = color[1];
-        pixels[i + 2] = color[2];
-        pixels[i + 3] = color[3];
-      }
-    }
-
-    const control = this.ringTexture.control as any;
-    if (control && control.setPixels) {
-      control.setPixels(0, 0, n, n, pixels);
-    }
-    this.lastDrawnCoverage = coverage;
-  }
-
-  private createCoverageSegments() {
-    const container = this.getSceneObject();
-    const count = this.coverageSegmentCount;
-    const startAngle = this.startAngleDegrees * this.degToRad;
-    const length = (this.fullCircle * this.ringRadius) / count + 0.006;
-    const thickness = this.ringThickness;
-
-    for (let index = 0; index < count; index++) {
-      const segment = global.scene.createSceneObject("Coverage Segment");
-      segment.setParent(container);
-      segment.enabled = true;
-
-      const transform = segment.createComponent("Component.ScreenTransform") as ScreenTransform;
-      if (transform) {
-        transform.anchors.setSize(new vec2(length, thickness));
-      }
-
-      const image = segment.createComponent("Component.Image") as Image;
-      if (image) {
-        (image as any).renderOrder = -1;
-        if (this.trailMaterial) {
-          image.mainMaterial = this.trailMaterial;
-        } else if (this.ringMaterial) {
-          image.mainMaterial = this.ringMaterial;
-        }
-      }
-
-      const angle = startAngle + ((index + 0.5) / count) * this.fullCircle;
-      this.placeOnRing(transform, segment.getTransform(), angle, this.ringRadius, true);
-      segment.enabled = false;
-      this.coverageSegments.push(segment);
-    }
+    const rotationDeg = (angle + (isPlayer ? Math.PI / 2 : -Math.PI / 2)) * this.radToDeg;
+    object.getTransform().setLocalRotation(quat.fromEulerAngles(0, 0, rotationDeg * this.degToRad));
   }
 
   private updateRingCoverage() {
-    if (this.ringMaterial) {
-      (this.ringMaterial.mainPass as any).coverage = this.coverage;
-    }
+    if (!this.ringMaterial || this.trailSegments.length === 0) return;
+    (this.ringMaterial.mainPass as any).coverage = this.coveredCount / this.trailSegments.length;
+  }
 
-    if (this.useProceduralRing) {
-      if (Math.abs(this.coverage - this.lastDrawnCoverage) < 0.004 && this.coverage < 1) return;
-      this.paintProceduralRing(this.coverage);
-      return;
-    }
-
-    const total = this.coverageSegments.length;
+  private paintSegmentAt(angle: number) {
+    const total = this.trailSegments.length;
     if (total === 0) return;
-    const painted = Math.min(total, Math.floor(this.coverage * total + 0.0001));
-    for (let index = 0; index < total; index++) {
-      this.coverageSegments[index].enabled = index < painted;
+
+    const offset = this.wrapAngle(angle - this.startAngleDegrees * this.degToRad);
+    const index = Math.min(total - 1, Math.floor((offset / this.fullCircle) * total));
+    if (this.segmentCovered[index]) return;
+
+    this.segmentCovered[index] = true;
+    const image = this.trailImages[index];
+    if (image && this.paintMaterial) {
+      image.mainMaterial = this.paintMaterial;
     }
+    this.coveredCount++;
   }
 
   private resetRound() {
@@ -404,21 +342,21 @@ export class GameController extends BaseScriptComponent {
     this.hazardRotation = 0;
     this.isJumping = false;
     this.jumpElapsed = 0;
-    this.travelled = 0;
-    this.coverage = 0;
+    this.coveredCount = 0;
 
-    this.placeOnRing(
-      this.playerTransform,
-      this.playerLocalTransform,
-      this.playerAngle,
-      this.ringRadius,
-      true
-    );
+    for (let index = 0; index < this.trailSegments.length; index++) {
+      this.trailSegments[index].enabled = true;
+      this.segmentCovered[index] = false;
+
+      const image = this.trailImages[index];
+      if (image && this.trackMaterial) {
+        image.mainMaterial = this.trackMaterial;
+      }
+    }
+
+    this.placeOnRing(this.playerTransform, this.player, this.playerAngle, this.ringRadius, true);
     this.placeHazards();
     this.updateRingCoverage();
-    if (this.useProceduralRing) {
-      this.paintProceduralRing(0);
-    }
   }
 
   private prepareStartScreen() {
@@ -430,6 +368,8 @@ export class GameController extends BaseScriptComponent {
   private startGame() {
     this.state = "playing";
     this.resetRound();
+    this.paintSegmentAt(this.playerAngle);
+    this.updateRingCoverage();
     this.hideMessage();
   }
 
