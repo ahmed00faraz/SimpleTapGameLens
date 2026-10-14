@@ -902,7 +902,10 @@
           "properties": {
             "hazardOne": {
               "isScriptInput": true,
-              "value": null,
+              "value": {
+                "UUID": "15d8049c-1f7b-4129-aff4-5b59889cd3d4",
+                "name": "Obstacle Demon"
+              },
               "type": "SceneObject"
             },
             "collisionAngleDegrees": {
@@ -919,7 +922,10 @@
             },
             "hazardTwo": {
               "isScriptInput": true,
-              "value": null,
+              "value": {
+                "UUID": "461b4e88-b76f-44a5-bdbf-76c3249e3995",
+                "name": "Obstacle Demon 2"
+              },
               "type": "SceneObject"
             },
             "safeJumpDepth": {
@@ -936,7 +942,10 @@
             },
             "hazardThree": {
               "isScriptInput": true,
-              "value": null,
+              "value": {
+                "UUID": "bbd3c4a7-da7c-4dc4-ac6a-5d4221588a73",
+                "name": "Obstacle Demon 3"
+              },
               "type": "SceneObject"
             },
             "gameOverUI": {
@@ -949,9 +958,15 @@
             },
             "hazardSpeed": {
               "isScriptInput": true,
-              "value": 0.699999988079071,
+              "value": 0.44999998807907104,
               "type": "float",
               "defaultValue": "0.7"
+            },
+            "horizontalRadiusMultiplier": {
+              "isScriptInput": true,
+              "value": 1.7799999713897705,
+              "type": "float",
+              "defaultValue": "1.78"
             },
             "jumpDepth": {
               "isScriptInput": true,
@@ -963,15 +978,7 @@
               "isScriptInput": true,
               "value": 0.5,
               "type": "float",
-              "defaultValue": "0.42"
-            },
-            "obstacle": {
-              "isScriptInput": true,
-              "value": {
-                "UUID": "15d8049c-1f7b-4129-aff4-5b59889cd3d4",
-                "name": "Obstacle Demon"
-              },
-              "type": "SceneObject"
+              "defaultValue": "0.5"
             },
             "player": {
               "isScriptInput": true,
@@ -983,7 +990,7 @@
             },
             "playerSpeed": {
               "isScriptInput": true,
-              "value": 1.7999999523162842,
+              "value": 1.2000000476837158,
               "type": "float",
               "defaultValue": "1.8"
             },
@@ -998,6 +1005,38 @@
               "type": "float",
               "defaultValue": "0.35"
             },
+            "startAngleDegrees": {
+              "isScriptInput": true,
+              "value": 180,
+              "type": "float",
+              "defaultValue": "60"
+            },
+            "trailMaterial": {
+              "isScriptInput": true,
+              "value": {
+                "UUID": "40fd8007-2d47-490d-8e19-97a79e70b6ed",
+                "name": "Trail_Color"
+              },
+              "type": "Asset.Material"
+            },
+            "trailSegmentCount": {
+              "isScriptInput": true,
+              "value": 64,
+              "type": "float",
+              "defaultValue": "96"
+            },
+            "trailSegmentLength": {
+              "isScriptInput": true,
+              "value": 0.052000001072883606,
+              "type": "float",
+              "defaultValue": "0.04"
+            },
+            "trailThickness": {
+              "isScriptInput": true,
+              "value": 0.02199999988079071,
+              "type": "float",
+              "defaultValue": "0.028"
+            },
             "scriptAsset": "@asset:Scripts/GameController.ts",
             "inputNames.0": "collisionAngleDegrees",
             "inputNames.1": "collisionRadius",
@@ -1007,14 +1046,19 @@
             "inputNames.5": "hazardSpeed",
             "inputNames.6": "hazardThree",
             "inputNames.7": "hazardTwo",
-            "inputNames.8": "jumpDepth",
-            "inputNames.9": "jumpDuration",
-            "inputNames.10": "obstacle",
+            "inputNames.8": "horizontalRadiusMultiplier",
+            "inputNames.9": "jumpDepth",
+            "inputNames.10": "jumpDuration",
             "inputNames.11": "player",
             "inputNames.12": "playerSpeed",
             "inputNames.13": "ringMaterial",
             "inputNames.14": "ringRadius",
             "inputNames.15": "safeJumpDepth",
+            "inputNames.16": "startAngleDegrees",
+            "inputNames.17": "trailMaterial",
+            "inputNames.18": "trailSegmentCount",
+            "inputNames.19": "trailSegmentLength",
+            "inputNames.20": "trailThickness",
             "name": "GameController",
             "enabled": true,
             "sceneObject": "@sceneObject:Game Container",
@@ -1265,8 +1309,8 @@
               "y": 0
             },
             "rotationAngle": 0,
-            "materials.0": "@asset:Image.mat",
-            "mainMaterial": "@asset:Image.mat",
+            "materials.0": "@asset:Player_Color.mat",
+            "mainMaterial": "@asset:Player_Color.mat",
             "stretchMode": {
               "value": "Fit",
               "type": "enum",
@@ -1442,8 +1486,8 @@
               "y": 0
             },
             "rotationAngle": 0,
-            "materials.0": "@asset:Image.mat",
-            "mainMaterial": "@asset:Image.mat",
+            "materials.0": "@asset:Obstacle_Color.mat",
+            "mainMaterial": "@asset:Obstacle_Color.mat",
             "stretchMode": {
               "value": "Fit",
               "type": "enum",
@@ -1507,9 +1551,363 @@
       ]
     },
     {
+      "id": "fd6f03aa-8e80-4032-b5ae-24c83c6758bc",
+      "name": "Obstacle Demon 1",
+      "enabled": true,
+      "parentId": "aed25596-10da-4605-a1db-f648d194b8dd",
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "layers": 1048576,
+      "components": [
+        {
+          "id": "fa7e262c-d2bd-44ba-b652-5781f354302c",
+          "type": "ScreenTransform",
+          "name": "Screen Transform",
+          "enabled": true,
+          "properties": {
+            "constraints.fixedHeight": false,
+            "constraints.fixedWidth": false,
+            "constraints.pinToBottom": false,
+            "constraints.pinToLeft": false,
+            "constraints.pinToRight": false,
+            "constraints.pinToTop": false,
+            "anchor.leftBottom": {
+              "x": -1,
+              "y": -1
+            },
+            "anchor.rightTop": {
+              "x": 1,
+              "y": 1
+            },
+            "anchor.left": -1,
+            "anchor.right": 1,
+            "anchor.top": 1,
+            "anchor.bottom": -1,
+            "offset.leftBottom": {
+              "x": 0,
+              "y": 0
+            },
+            "offset.rightTop": {
+              "x": 0,
+              "y": 0
+            },
+            "offset.left": 0,
+            "offset.right": 0,
+            "offset.top": 0,
+            "offset.bottom": 0,
+            "pivot": {
+              "x": 0,
+              "y": 0
+            },
+            "advanced": false,
+            "name": "Screen Transform",
+            "enabled": true,
+            "sceneObject": "@sceneObject:Obstacle Demon 1",
+            "isPrefabInstanceRoot": false,
+            "hasPrefabChanges": false,
+            "id": "fa7e262c-d2bd-44ba-b652-5781f354302c",
+            "type": "ScreenTransform"
+          }
+        }
+      ]
+    },
+    {
+      "id": "187dfb38-a4a6-4e5b-89ae-b44ee89da71e",
+      "name": "Image",
+      "enabled": true,
+      "parentId": "fd6f03aa-8e80-4032-b5ae-24c83c6758bc",
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          32,
+          32,
+          32
+        ]
+      },
+      "layers": 1048576,
+      "components": [
+        {
+          "id": "4586e5e6-a429-4bb7-8afe-8c6163c9fcb1",
+          "type": "Image",
+          "name": "Image",
+          "enabled": true,
+          "properties": {
+            "flipX": false,
+            "flipY": false,
+            "pivot": {
+              "x": 0,
+              "y": 0
+            },
+            "rotationAngle": 0,
+            "materials.0": "@asset:Image.mat",
+            "mainMaterial": "@asset:Image.mat",
+            "stretchMode": {
+              "value": "Fit",
+              "type": "enum",
+              "enumType": "Editor.Components.StretchMode",
+              "options": [
+                "Fill",
+                "Fit",
+                "Stretch",
+                "FitHeight",
+                "FitWidth",
+                "FillAndCut"
+              ]
+            },
+            "verticalAlignment": {
+              "value": "Center",
+              "type": "enum",
+              "enumType": "Editor.Alignment.Vertical",
+              "options": [
+                "Bottom",
+                "Center",
+                "Top"
+              ]
+            },
+            "horizontalAlignment": {
+              "value": "Center",
+              "type": "enum",
+              "enumType": "Editor.Alignment.Horizontal",
+              "options": [
+                "Left",
+                "Center",
+                "Right"
+              ]
+            },
+            "meshShadowMode": {
+              "value": "None",
+              "type": "enum",
+              "enumType": "Editor.Components.MeshShadowMode",
+              "options": [
+                "None",
+                "Caster",
+                "Receiver"
+              ]
+            },
+            "shadowColor": {
+              "x": 1,
+              "y": 1,
+              "z": 1,
+              "w": 1
+            },
+            "shadowDensity": 1,
+            "renderOrder": 0,
+            "name": "Image",
+            "enabled": true,
+            "sceneObject": "@sceneObject:Image#3",
+            "isPrefabInstanceRoot": false,
+            "hasPrefabChanges": false,
+            "id": "4586e5e6-a429-4bb7-8afe-8c6163c9fcb1",
+            "type": "Image"
+          }
+        }
+      ]
+    },
+    {
+      "id": "11a6220a-2526-4a10-b513-d17efd26c110",
+      "name": "Obstacle Demon 2",
+      "enabled": true,
+      "parentId": "aed25596-10da-4605-a1db-f648d194b8dd",
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "layers": 1048576,
+      "components": [
+        {
+          "id": "6f4ea270-b629-4fc6-9502-a4197ba21c6f",
+          "type": "ScreenTransform",
+          "name": "Screen Transform",
+          "enabled": true,
+          "properties": {
+            "constraints.fixedHeight": false,
+            "constraints.fixedWidth": false,
+            "constraints.pinToBottom": false,
+            "constraints.pinToLeft": false,
+            "constraints.pinToRight": false,
+            "constraints.pinToTop": false,
+            "anchor.leftBottom": {
+              "x": -1,
+              "y": -1
+            },
+            "anchor.rightTop": {
+              "x": 1,
+              "y": 1
+            },
+            "anchor.left": -1,
+            "anchor.right": 1,
+            "anchor.top": 1,
+            "anchor.bottom": -1,
+            "offset.leftBottom": {
+              "x": 0,
+              "y": 0
+            },
+            "offset.rightTop": {
+              "x": 0,
+              "y": 0
+            },
+            "offset.left": 0,
+            "offset.right": 0,
+            "offset.top": 0,
+            "offset.bottom": 0,
+            "pivot": {
+              "x": 0,
+              "y": 0
+            },
+            "advanced": false,
+            "name": "Screen Transform",
+            "enabled": true,
+            "sceneObject": "@sceneObject:Obstacle Demon 2#0",
+            "isPrefabInstanceRoot": false,
+            "hasPrefabChanges": false,
+            "id": "6f4ea270-b629-4fc6-9502-a4197ba21c6f",
+            "type": "ScreenTransform"
+          }
+        }
+      ]
+    },
+    {
+      "id": "36bfc922-31c4-4a54-a415-42e037fbab25",
+      "name": "Image",
+      "enabled": true,
+      "parentId": "11a6220a-2526-4a10-b513-d17efd26c110",
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          32,
+          32,
+          32
+        ]
+      },
+      "layers": 1048576,
+      "components": [
+        {
+          "id": "09ce6822-8ac5-4c17-8f5b-51bbf118971e",
+          "type": "Image",
+          "name": "Image",
+          "enabled": true,
+          "properties": {
+            "flipX": false,
+            "flipY": false,
+            "pivot": {
+              "x": 0,
+              "y": 0
+            },
+            "rotationAngle": 0,
+            "materials.0": "@asset:Obstacle_Color.mat",
+            "mainMaterial": "@asset:Obstacle_Color.mat",
+            "stretchMode": {
+              "value": "Fit",
+              "type": "enum",
+              "enumType": "Editor.Components.StretchMode",
+              "options": [
+                "Fill",
+                "Fit",
+                "Stretch",
+                "FitHeight",
+                "FitWidth",
+                "FillAndCut"
+              ]
+            },
+            "verticalAlignment": {
+              "value": "Center",
+              "type": "enum",
+              "enumType": "Editor.Alignment.Vertical",
+              "options": [
+                "Bottom",
+                "Center",
+                "Top"
+              ]
+            },
+            "horizontalAlignment": {
+              "value": "Center",
+              "type": "enum",
+              "enumType": "Editor.Alignment.Horizontal",
+              "options": [
+                "Left",
+                "Center",
+                "Right"
+              ]
+            },
+            "meshShadowMode": {
+              "value": "None",
+              "type": "enum",
+              "enumType": "Editor.Components.MeshShadowMode",
+              "options": [
+                "None",
+                "Caster",
+                "Receiver"
+              ]
+            },
+            "shadowColor": {
+              "x": 1,
+              "y": 1,
+              "z": 1,
+              "w": 1
+            },
+            "shadowDensity": 1,
+            "renderOrder": 0,
+            "name": "Image",
+            "enabled": true,
+            "sceneObject": "@sceneObject:Image#4",
+            "isPrefabInstanceRoot": false,
+            "hasPrefabChanges": false,
+            "id": "09ce6822-8ac5-4c17-8f5b-51bbf118971e",
+            "type": "Image"
+          }
+        }
+      ]
+    },
+    {
       "id": "cf88bd2f-c010-4e83-8ad2-f45d9fcd80c4",
       "name": "GameOver UI",
-      "enabled": false,
+      "enabled": true,
       "parentId": "aed25596-10da-4605-a1db-f648d194b8dd",
       "transform": {
         "position": [
@@ -1936,9 +2334,576 @@
           }
         }
       ]
+    },
+    {
+      "id": "461b4e88-b76f-44a5-bdbf-76c3249e3995",
+      "name": "Obstacle Demon 2",
+      "enabled": true,
+      "parentId": "aed25596-10da-4605-a1db-f648d194b8dd",
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "layers": 1048576,
+      "components": [
+        {
+          "id": "99ab7bd6-1359-455a-aa27-5208987178e7",
+          "type": "ScreenTransform",
+          "name": "Screen Transform",
+          "enabled": true,
+          "properties": {
+            "constraints.fixedHeight": false,
+            "constraints.fixedWidth": false,
+            "constraints.pinToBottom": false,
+            "constraints.pinToLeft": false,
+            "constraints.pinToRight": false,
+            "constraints.pinToTop": false,
+            "anchor.leftBottom": {
+              "x": -1,
+              "y": -1
+            },
+            "anchor.rightTop": {
+              "x": 1,
+              "y": 1
+            },
+            "anchor.left": -1,
+            "anchor.right": 1,
+            "anchor.top": 1,
+            "anchor.bottom": -1,
+            "offset.leftBottom": {
+              "x": 0,
+              "y": 0
+            },
+            "offset.rightTop": {
+              "x": 0,
+              "y": 0
+            },
+            "offset.left": 0,
+            "offset.right": 0,
+            "offset.top": 0,
+            "offset.bottom": 0,
+            "pivot": {
+              "x": 0,
+              "y": 0
+            },
+            "advanced": false,
+            "name": "Screen Transform",
+            "enabled": true,
+            "sceneObject": "@sceneObject:Obstacle Demon 2#1",
+            "isPrefabInstanceRoot": false,
+            "hasPrefabChanges": false,
+            "id": "99ab7bd6-1359-455a-aa27-5208987178e7",
+            "type": "ScreenTransform"
+          }
+        }
+      ]
+    },
+    {
+      "id": "4fc345e5-cf1b-4311-8edb-10891cb8cbe3",
+      "name": "Image",
+      "enabled": true,
+      "parentId": "461b4e88-b76f-44a5-bdbf-76c3249e3995",
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          32,
+          32,
+          32
+        ]
+      },
+      "layers": 1048576,
+      "components": [
+        {
+          "id": "f01f2389-3986-4176-a47c-d9041b211a8f",
+          "type": "Image",
+          "name": "Image",
+          "enabled": true,
+          "properties": {
+            "flipX": false,
+            "flipY": false,
+            "pivot": {
+              "x": 0,
+              "y": 0
+            },
+            "rotationAngle": 0,
+            "materials.0": "@asset:Obstacle_Color.mat",
+            "mainMaterial": "@asset:Obstacle_Color.mat",
+            "stretchMode": {
+              "value": "Fit",
+              "type": "enum",
+              "enumType": "Editor.Components.StretchMode",
+              "options": [
+                "Fill",
+                "Fit",
+                "Stretch",
+                "FitHeight",
+                "FitWidth",
+                "FillAndCut"
+              ]
+            },
+            "verticalAlignment": {
+              "value": "Center",
+              "type": "enum",
+              "enumType": "Editor.Alignment.Vertical",
+              "options": [
+                "Bottom",
+                "Center",
+                "Top"
+              ]
+            },
+            "horizontalAlignment": {
+              "value": "Center",
+              "type": "enum",
+              "enumType": "Editor.Alignment.Horizontal",
+              "options": [
+                "Left",
+                "Center",
+                "Right"
+              ]
+            },
+            "meshShadowMode": {
+              "value": "None",
+              "type": "enum",
+              "enumType": "Editor.Components.MeshShadowMode",
+              "options": [
+                "None",
+                "Caster",
+                "Receiver"
+              ]
+            },
+            "shadowColor": {
+              "x": 1,
+              "y": 1,
+              "z": 1,
+              "w": 1
+            },
+            "shadowDensity": 1,
+            "renderOrder": 0,
+            "name": "Image",
+            "enabled": true,
+            "sceneObject": "@sceneObject:Image#5",
+            "isPrefabInstanceRoot": false,
+            "hasPrefabChanges": false,
+            "id": "f01f2389-3986-4176-a47c-d9041b211a8f",
+            "type": "Image"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bbd3c4a7-da7c-4dc4-ac6a-5d4221588a73",
+      "name": "Obstacle Demon 3",
+      "enabled": true,
+      "parentId": "aed25596-10da-4605-a1db-f648d194b8dd",
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "layers": 1048576,
+      "components": [
+        {
+          "id": "c3fc9a3e-e5cc-44cf-92a4-4886465513bf",
+          "type": "ScreenTransform",
+          "name": "Screen Transform",
+          "enabled": true,
+          "properties": {
+            "constraints.fixedHeight": false,
+            "constraints.fixedWidth": false,
+            "constraints.pinToBottom": false,
+            "constraints.pinToLeft": false,
+            "constraints.pinToRight": false,
+            "constraints.pinToTop": false,
+            "anchor.leftBottom": {
+              "x": -1,
+              "y": -1
+            },
+            "anchor.rightTop": {
+              "x": 1,
+              "y": 1
+            },
+            "anchor.left": -1,
+            "anchor.right": 1,
+            "anchor.top": 1,
+            "anchor.bottom": -1,
+            "offset.leftBottom": {
+              "x": 0,
+              "y": 0
+            },
+            "offset.rightTop": {
+              "x": 0,
+              "y": 0
+            },
+            "offset.left": 0,
+            "offset.right": 0,
+            "offset.top": 0,
+            "offset.bottom": 0,
+            "pivot": {
+              "x": 0,
+              "y": 0
+            },
+            "advanced": false,
+            "name": "Screen Transform",
+            "enabled": true,
+            "sceneObject": "@sceneObject:Obstacle Demon 3",
+            "isPrefabInstanceRoot": false,
+            "hasPrefabChanges": false,
+            "id": "c3fc9a3e-e5cc-44cf-92a4-4886465513bf",
+            "type": "ScreenTransform"
+          }
+        }
+      ]
+    },
+    {
+      "id": "79cef5ac-980c-45bf-9243-233866d1d738",
+      "name": "Image",
+      "enabled": true,
+      "parentId": "bbd3c4a7-da7c-4dc4-ac6a-5d4221588a73",
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          32,
+          32,
+          32
+        ]
+      },
+      "layers": 1048576,
+      "components": [
+        {
+          "id": "93116111-a6df-4866-901d-41502f317a66",
+          "type": "Image",
+          "name": "Image",
+          "enabled": true,
+          "properties": {
+            "flipX": false,
+            "flipY": false,
+            "pivot": {
+              "x": 0,
+              "y": 0
+            },
+            "rotationAngle": 0,
+            "materials.0": "@asset:Image.mat",
+            "mainMaterial": "@asset:Image.mat",
+            "stretchMode": {
+              "value": "Fit",
+              "type": "enum",
+              "enumType": "Editor.Components.StretchMode",
+              "options": [
+                "Fill",
+                "Fit",
+                "Stretch",
+                "FitHeight",
+                "FitWidth",
+                "FillAndCut"
+              ]
+            },
+            "verticalAlignment": {
+              "value": "Center",
+              "type": "enum",
+              "enumType": "Editor.Alignment.Vertical",
+              "options": [
+                "Bottom",
+                "Center",
+                "Top"
+              ]
+            },
+            "horizontalAlignment": {
+              "value": "Center",
+              "type": "enum",
+              "enumType": "Editor.Alignment.Horizontal",
+              "options": [
+                "Left",
+                "Center",
+                "Right"
+              ]
+            },
+            "meshShadowMode": {
+              "value": "None",
+              "type": "enum",
+              "enumType": "Editor.Components.MeshShadowMode",
+              "options": [
+                "None",
+                "Caster",
+                "Receiver"
+              ]
+            },
+            "shadowColor": {
+              "x": 1,
+              "y": 1,
+              "z": 1,
+              "w": 1
+            },
+            "shadowDensity": 1,
+            "renderOrder": 0,
+            "name": "Image",
+            "enabled": true,
+            "sceneObject": "@sceneObject:Image#6",
+            "isPrefabInstanceRoot": false,
+            "hasPrefabChanges": false,
+            "id": "93116111-a6df-4866-901d-41502f317a66",
+            "type": "Image"
+          }
+        }
+      ]
     }
   ],
   "assets": [
+    {
+      "id": "06bfe87b-599f-4566-a4b5-c2dad1d25e4e",
+      "name": "Ring_Base",
+      "type": "Material",
+      "path": "Ring_Base.mat",
+      "properties": {
+        "passInfos.0.baseColor.value": {
+          "x": 0.15000000596046448,
+          "y": 0.15000000596046448,
+          "z": 0.15000000596046448,
+          "w": 1
+        },
+        "passInfos.0.baseColor.label": "Base Color",
+        "passInfos.0.ENABLE_BASE_TEX": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Base Texture"
+        },
+        "passInfos.0.baseTex.value": null,
+        "passInfos.0.baseTex.hidden": true,
+        "passInfos.0.baseTex.enabledBy": "ENABLE_BASE_TEX",
+        "passInfos.0.baseTex.label": "Texture",
+        "passInfos.0.Texture UV": {
+          "value": "Mesh UV 0",
+          "isDefine": true,
+          "type": "defineSelect",
+          "options": [
+            "Mesh UV 0",
+            "Mesh UV 1",
+            "Transformed UV 2",
+            "Transformed UV 3"
+          ],
+          "label": "Texture UV"
+        },
+        "passInfos.0.ENABLE_OPACITY_TEX": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Opacity Texture"
+        },
+        "passInfos.0.opacityTex.value": null,
+        "passInfos.0.opacityTex.hidden": true,
+        "passInfos.0.opacityTex.enabledBy": "ENABLE_OPACITY_TEX",
+        "passInfos.0.opacityTex.label": "Texture",
+        "passInfos.0.Tweak_N67": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Transformed UV 2"
+        },
+        "passInfos.0.Source": {
+          "value": "Mesh UV 0",
+          "isDefine": true,
+          "type": "defineSelect",
+          "options": [
+            "Mesh UV 0",
+            "Mesh UV 1",
+            "Screen UV",
+            "Transformed UV 2"
+          ],
+          "label": "Source"
+        },
+        "passInfos.0.uv2Scale.value": null,
+        "passInfos.0.uv2Scale.hidden": true,
+        "passInfos.0.uv2Scale.enabledBy": "Tweak_N67",
+        "passInfos.0.uv2Scale.label": "Scale",
+        "passInfos.0.uv2Offset.value": null,
+        "passInfos.0.uv2Offset.hidden": true,
+        "passInfos.0.uv2Offset.enabledBy": "Tweak_N67",
+        "passInfos.0.uv2Offset.label": "Offset",
+        "passInfos.0.uv2EnableAnimation": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Animation"
+        },
+        "passInfos.0.Tweak_N11": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Transformed UV 3"
+        },
+        "passInfos.0.uv3Scale.value": null,
+        "passInfos.0.uv3Scale.hidden": true,
+        "passInfos.0.uv3Scale.enabledBy": "Tweak_N11",
+        "passInfos.0.uv3Scale.label": "Scale",
+        "passInfos.0.uv3Offset.value": null,
+        "passInfos.0.uv3Offset.hidden": true,
+        "passInfos.0.uv3Offset.enabledBy": "Tweak_N11",
+        "passInfos.0.uv3Offset.label": "Offset",
+        "passInfos.0.uv3EnableAnimation": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Animation"
+        },
+        "passInfos.0.alphaTestThreshold.value": null,
+        "passInfos.0.alphaTestThreshold.hidden": true,
+        "passInfos.0.alphaTestThreshold.enabledBy": "uv3EnableAnimation",
+        "passInfos.0.alphaTestThreshold.label": "Alpha Test Threshold",
+        "passInfos.0.alphaTestThreshold.min": 0,
+        "passInfos.0.alphaTestThreshold.max": 1,
+        "passInfos.0.Port_Default_N204": 1,
+        "passInfos.0.Port_Default_N369": {
+          "x": 1,
+          "y": 1,
+          "z": 1,
+          "w": 1
+        },
+        "passInfos.0.PreviewEnabled": 0,
+        "passInfos.0.depthWrite": true,
+        "passInfos.0.depthTest": true,
+        "passInfos.0.depthFunction": {
+          "value": "LessEqual",
+          "type": "enum",
+          "enumType": "Editor.Assets.DepthFunction",
+          "options": [
+            "Never",
+            "Less",
+            "Equal",
+            "LessEqual",
+            "Greater",
+            "NotEqual",
+            "GreaterEqual",
+            "Always"
+          ]
+        },
+        "passInfos.0.twoSided": false,
+        "passInfos.0.cullMode": {
+          "value": "Back",
+          "type": "enum",
+          "enumType": "Editor.Assets.CullMode",
+          "options": [
+            "Front",
+            "Back",
+            "FrontAndBack"
+          ]
+        },
+        "passInfos.0.blendMode": {
+          "value": "Disabled",
+          "type": "enum",
+          "enumType": "Editor.Assets.BlendMode",
+          "options": [
+            "Disabled",
+            "Normal",
+            "Multiply",
+            "MultiplyLegacy",
+            "Add",
+            "AddLegacy",
+            "PremultipliedAlpha",
+            "Glass",
+            "ColoredGlass",
+            "AlphaTest",
+            "AlphaToCoverage",
+            "Screen",
+            "Min",
+            "Max",
+            "PremultipliedAlphaAuto",
+            "Custom",
+            "Darken",
+            "ColorBurn",
+            "Lighten",
+            "ColorDodge",
+            "Overlay",
+            "SoftLight",
+            "HardLight",
+            "VividLight",
+            "LinearLight",
+            "PinLight",
+            "HardMix",
+            "Diff",
+            "Exclusion",
+            "Subtract",
+            "Hue",
+            "Saturation",
+            "Color",
+            "Luminosity",
+            "Average",
+            "Negation",
+            "HardReflect",
+            "HardGlow",
+            "HardPhoenix",
+            "Realistic",
+            "Division",
+            "Bright",
+            "Forgray",
+            "NotBright",
+            "Intense"
+          ]
+        },
+        "passInfos.0.polygonOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "passInfos.0.frustumCulling": {
+          "value": "Auto",
+          "type": "enum",
+          "enumType": "Editor.Assets.FrustumCullMode",
+          "options": [
+            "Auto",
+            "Extend"
+          ]
+        },
+        "passInfos.0.instanceCount": 1,
+        "passInfos.0.id": "64ee3539-7147-44c4-b2ba-0874355ffd47",
+        "passInfos.0.type": "PassInfo",
+        "name": "Ring_Base",
+        "fileMeta.id": "742c464e-cbd0-4cad-9ae0-aead6bb8b452",
+        "id": "06bfe87b-599f-4566-a4b5-c2dad1d25e4e",
+        "type": "Material"
+      }
+    },
     {
       "id": "6d58d62d-e9d0-479d-b5b8-f530ba81a3de",
       "name": "Image",
@@ -2218,6 +3183,645 @@
         "fileMeta.id": "e55b5142-e89b-416c-9290-5cd49af03718",
         "id": "923415f5-4245-4675-ade1-6d69d6d23e71",
         "type": "RenderTarget"
+      }
+    },
+    {
+      "id": "74371679-781a-4fea-b1b8-1f27cbc11e6b",
+      "name": "Player_Color",
+      "type": "Material",
+      "path": "Player_Color.mat",
+      "properties": {
+        "passInfos.0.baseColor.value": {
+          "x": 0.20000000298023224,
+          "y": 0.8999999761581421,
+          "z": 1,
+          "w": 1
+        },
+        "passInfos.0.baseColor.label": "Base Color",
+        "passInfos.0.ENABLE_BASE_TEX": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Base Texture"
+        },
+        "passInfos.0.baseTex.value": null,
+        "passInfos.0.baseTex.hidden": true,
+        "passInfos.0.baseTex.enabledBy": "ENABLE_BASE_TEX",
+        "passInfos.0.baseTex.label": "Texture",
+        "passInfos.0.Texture UV": {
+          "value": "Mesh UV 0",
+          "isDefine": true,
+          "type": "defineSelect",
+          "options": [
+            "Mesh UV 0",
+            "Mesh UV 1",
+            "Transformed UV 2",
+            "Transformed UV 3"
+          ],
+          "label": "Texture UV"
+        },
+        "passInfos.0.ENABLE_OPACITY_TEX": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Opacity Texture"
+        },
+        "passInfos.0.opacityTex.value": null,
+        "passInfos.0.opacityTex.hidden": true,
+        "passInfos.0.opacityTex.enabledBy": "ENABLE_OPACITY_TEX",
+        "passInfos.0.opacityTex.label": "Texture",
+        "passInfos.0.Tweak_N67": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Transformed UV 2"
+        },
+        "passInfos.0.Source": {
+          "value": "Mesh UV 0",
+          "isDefine": true,
+          "type": "defineSelect",
+          "options": [
+            "Mesh UV 0",
+            "Mesh UV 1",
+            "Screen UV",
+            "Transformed UV 2"
+          ],
+          "label": "Source"
+        },
+        "passInfos.0.uv2Scale.value": null,
+        "passInfos.0.uv2Scale.hidden": true,
+        "passInfos.0.uv2Scale.enabledBy": "Tweak_N67",
+        "passInfos.0.uv2Scale.label": "Scale",
+        "passInfos.0.uv2Offset.value": null,
+        "passInfos.0.uv2Offset.hidden": true,
+        "passInfos.0.uv2Offset.enabledBy": "Tweak_N67",
+        "passInfos.0.uv2Offset.label": "Offset",
+        "passInfos.0.uv2EnableAnimation": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Animation"
+        },
+        "passInfos.0.Tweak_N11": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Transformed UV 3"
+        },
+        "passInfos.0.uv3Scale.value": null,
+        "passInfos.0.uv3Scale.hidden": true,
+        "passInfos.0.uv3Scale.enabledBy": "Tweak_N11",
+        "passInfos.0.uv3Scale.label": "Scale",
+        "passInfos.0.uv3Offset.value": null,
+        "passInfos.0.uv3Offset.hidden": true,
+        "passInfos.0.uv3Offset.enabledBy": "Tweak_N11",
+        "passInfos.0.uv3Offset.label": "Offset",
+        "passInfos.0.uv3EnableAnimation": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Animation"
+        },
+        "passInfos.0.alphaTestThreshold.value": null,
+        "passInfos.0.alphaTestThreshold.hidden": true,
+        "passInfos.0.alphaTestThreshold.enabledBy": "uv3EnableAnimation",
+        "passInfos.0.alphaTestThreshold.label": "Alpha Test Threshold",
+        "passInfos.0.alphaTestThreshold.min": 0,
+        "passInfos.0.alphaTestThreshold.max": 1,
+        "passInfos.0.Port_Default_N204": 1,
+        "passInfos.0.Port_Default_N369": {
+          "x": 1,
+          "y": 1,
+          "z": 1,
+          "w": 1
+        },
+        "passInfos.0.PreviewEnabled": 0,
+        "passInfos.0.depthWrite": true,
+        "passInfos.0.depthTest": true,
+        "passInfos.0.depthFunction": {
+          "value": "LessEqual",
+          "type": "enum",
+          "enumType": "Editor.Assets.DepthFunction",
+          "options": [
+            "Never",
+            "Less",
+            "Equal",
+            "LessEqual",
+            "Greater",
+            "NotEqual",
+            "GreaterEqual",
+            "Always"
+          ]
+        },
+        "passInfos.0.twoSided": false,
+        "passInfos.0.cullMode": {
+          "value": "Back",
+          "type": "enum",
+          "enumType": "Editor.Assets.CullMode",
+          "options": [
+            "Front",
+            "Back",
+            "FrontAndBack"
+          ]
+        },
+        "passInfos.0.blendMode": {
+          "value": "Disabled",
+          "type": "enum",
+          "enumType": "Editor.Assets.BlendMode",
+          "options": [
+            "Disabled",
+            "Normal",
+            "Multiply",
+            "MultiplyLegacy",
+            "Add",
+            "AddLegacy",
+            "PremultipliedAlpha",
+            "Glass",
+            "ColoredGlass",
+            "AlphaTest",
+            "AlphaToCoverage",
+            "Screen",
+            "Min",
+            "Max",
+            "PremultipliedAlphaAuto",
+            "Custom",
+            "Darken",
+            "ColorBurn",
+            "Lighten",
+            "ColorDodge",
+            "Overlay",
+            "SoftLight",
+            "HardLight",
+            "VividLight",
+            "LinearLight",
+            "PinLight",
+            "HardMix",
+            "Diff",
+            "Exclusion",
+            "Subtract",
+            "Hue",
+            "Saturation",
+            "Color",
+            "Luminosity",
+            "Average",
+            "Negation",
+            "HardReflect",
+            "HardGlow",
+            "HardPhoenix",
+            "Realistic",
+            "Division",
+            "Bright",
+            "Forgray",
+            "NotBright",
+            "Intense"
+          ]
+        },
+        "passInfos.0.polygonOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "passInfos.0.frustumCulling": {
+          "value": "Auto",
+          "type": "enum",
+          "enumType": "Editor.Assets.FrustumCullMode",
+          "options": [
+            "Auto",
+            "Extend"
+          ]
+        },
+        "passInfos.0.instanceCount": 1,
+        "passInfos.0.id": "1a175b1f-22ea-4f1b-ae2c-68f096051106",
+        "passInfos.0.type": "PassInfo",
+        "name": "Player_Color",
+        "fileMeta.id": "cd8f2c2e-d982-4b62-b394-a8c0fed1bba6",
+        "id": "74371679-781a-4fea-b1b8-1f27cbc11e6b",
+        "type": "Material"
+      }
+    },
+    {
+      "id": "95695a2f-84ac-4afd-a70c-6a4d6b9c19b2",
+      "name": "Obstacle_Color",
+      "type": "Material",
+      "path": "Obstacle_Color.mat",
+      "properties": {
+        "passInfos.0.baseColor.value": {
+          "x": 1,
+          "y": 0.20000000298023224,
+          "z": 0.20000000298023224,
+          "w": 1
+        },
+        "passInfos.0.baseColor.label": "Base Color",
+        "passInfos.0.ENABLE_BASE_TEX": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Base Texture"
+        },
+        "passInfos.0.baseTex.value": null,
+        "passInfos.0.baseTex.hidden": true,
+        "passInfos.0.baseTex.enabledBy": "ENABLE_BASE_TEX",
+        "passInfos.0.baseTex.label": "Texture",
+        "passInfos.0.Texture UV": {
+          "value": "Mesh UV 0",
+          "isDefine": true,
+          "type": "defineSelect",
+          "options": [
+            "Mesh UV 0",
+            "Mesh UV 1",
+            "Transformed UV 2",
+            "Transformed UV 3"
+          ],
+          "label": "Texture UV"
+        },
+        "passInfos.0.ENABLE_OPACITY_TEX": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Opacity Texture"
+        },
+        "passInfos.0.opacityTex.value": null,
+        "passInfos.0.opacityTex.hidden": true,
+        "passInfos.0.opacityTex.enabledBy": "ENABLE_OPACITY_TEX",
+        "passInfos.0.opacityTex.label": "Texture",
+        "passInfos.0.Tweak_N67": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Transformed UV 2"
+        },
+        "passInfos.0.Source": {
+          "value": "Mesh UV 0",
+          "isDefine": true,
+          "type": "defineSelect",
+          "options": [
+            "Mesh UV 0",
+            "Mesh UV 1",
+            "Screen UV",
+            "Transformed UV 2"
+          ],
+          "label": "Source"
+        },
+        "passInfos.0.uv2Scale.value": null,
+        "passInfos.0.uv2Scale.hidden": true,
+        "passInfos.0.uv2Scale.enabledBy": "Tweak_N67",
+        "passInfos.0.uv2Scale.label": "Scale",
+        "passInfos.0.uv2Offset.value": null,
+        "passInfos.0.uv2Offset.hidden": true,
+        "passInfos.0.uv2Offset.enabledBy": "Tweak_N67",
+        "passInfos.0.uv2Offset.label": "Offset",
+        "passInfos.0.uv2EnableAnimation": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Animation"
+        },
+        "passInfos.0.Tweak_N11": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Transformed UV 3"
+        },
+        "passInfos.0.uv3Scale.value": null,
+        "passInfos.0.uv3Scale.hidden": true,
+        "passInfos.0.uv3Scale.enabledBy": "Tweak_N11",
+        "passInfos.0.uv3Scale.label": "Scale",
+        "passInfos.0.uv3Offset.value": null,
+        "passInfos.0.uv3Offset.hidden": true,
+        "passInfos.0.uv3Offset.enabledBy": "Tweak_N11",
+        "passInfos.0.uv3Offset.label": "Offset",
+        "passInfos.0.uv3EnableAnimation": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Animation"
+        },
+        "passInfos.0.alphaTestThreshold.value": null,
+        "passInfos.0.alphaTestThreshold.hidden": true,
+        "passInfos.0.alphaTestThreshold.enabledBy": "uv3EnableAnimation",
+        "passInfos.0.alphaTestThreshold.label": "Alpha Test Threshold",
+        "passInfos.0.alphaTestThreshold.min": 0,
+        "passInfos.0.alphaTestThreshold.max": 1,
+        "passInfos.0.Port_Default_N204": 1,
+        "passInfos.0.Port_Default_N369": {
+          "x": 1,
+          "y": 1,
+          "z": 1,
+          "w": 1
+        },
+        "passInfos.0.PreviewEnabled": 0,
+        "passInfos.0.depthWrite": true,
+        "passInfos.0.depthTest": true,
+        "passInfos.0.depthFunction": {
+          "value": "LessEqual",
+          "type": "enum",
+          "enumType": "Editor.Assets.DepthFunction",
+          "options": [
+            "Never",
+            "Less",
+            "Equal",
+            "LessEqual",
+            "Greater",
+            "NotEqual",
+            "GreaterEqual",
+            "Always"
+          ]
+        },
+        "passInfos.0.twoSided": false,
+        "passInfos.0.cullMode": {
+          "value": "Back",
+          "type": "enum",
+          "enumType": "Editor.Assets.CullMode",
+          "options": [
+            "Front",
+            "Back",
+            "FrontAndBack"
+          ]
+        },
+        "passInfos.0.blendMode": {
+          "value": "Disabled",
+          "type": "enum",
+          "enumType": "Editor.Assets.BlendMode",
+          "options": [
+            "Disabled",
+            "Normal",
+            "Multiply",
+            "MultiplyLegacy",
+            "Add",
+            "AddLegacy",
+            "PremultipliedAlpha",
+            "Glass",
+            "ColoredGlass",
+            "AlphaTest",
+            "AlphaToCoverage",
+            "Screen",
+            "Min",
+            "Max",
+            "PremultipliedAlphaAuto",
+            "Custom",
+            "Darken",
+            "ColorBurn",
+            "Lighten",
+            "ColorDodge",
+            "Overlay",
+            "SoftLight",
+            "HardLight",
+            "VividLight",
+            "LinearLight",
+            "PinLight",
+            "HardMix",
+            "Diff",
+            "Exclusion",
+            "Subtract",
+            "Hue",
+            "Saturation",
+            "Color",
+            "Luminosity",
+            "Average",
+            "Negation",
+            "HardReflect",
+            "HardGlow",
+            "HardPhoenix",
+            "Realistic",
+            "Division",
+            "Bright",
+            "Forgray",
+            "NotBright",
+            "Intense"
+          ]
+        },
+        "passInfos.0.polygonOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "passInfos.0.frustumCulling": {
+          "value": "Auto",
+          "type": "enum",
+          "enumType": "Editor.Assets.FrustumCullMode",
+          "options": [
+            "Auto",
+            "Extend"
+          ]
+        },
+        "passInfos.0.instanceCount": 1,
+        "passInfos.0.id": "98a2ef6f-ca0a-46ed-87d4-0651c1f93019",
+        "passInfos.0.type": "PassInfo",
+        "name": "Obstacle_Color",
+        "fileMeta.id": "9dc45798-5394-4e70-9ef3-4eed94329bae",
+        "id": "95695a2f-84ac-4afd-a70c-6a4d6b9c19b2",
+        "type": "Material"
+      }
+    },
+    {
+      "id": "40fd8007-2d47-490d-8e19-97a79e70b6ed",
+      "name": "Trail_Color",
+      "type": "Material",
+      "path": "Trail_Color.mat",
+      "properties": {
+        "passInfos.0.baseColor.value": {
+          "x": 1,
+          "y": 0.20000000298023224,
+          "z": 0.800000011920929,
+          "w": 1
+        },
+        "passInfos.0.baseColor.label": "Base Color",
+        "passInfos.0.ENABLE_BASE_TEX": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Base Texture"
+        },
+        "passInfos.0.baseTex.value": null,
+        "passInfos.0.baseTex.hidden": true,
+        "passInfos.0.baseTex.enabledBy": "ENABLE_BASE_TEX",
+        "passInfos.0.baseTex.label": "Texture",
+        "passInfos.0.Texture UV": {
+          "value": "Mesh UV 0",
+          "isDefine": true,
+          "type": "defineSelect",
+          "options": [
+            "Mesh UV 0",
+            "Mesh UV 1",
+            "Transformed UV 2",
+            "Transformed UV 3"
+          ],
+          "label": "Texture UV"
+        },
+        "passInfos.0.ENABLE_OPACITY_TEX": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Opacity Texture"
+        },
+        "passInfos.0.opacityTex.value": null,
+        "passInfos.0.opacityTex.hidden": true,
+        "passInfos.0.opacityTex.enabledBy": "ENABLE_OPACITY_TEX",
+        "passInfos.0.opacityTex.label": "Texture",
+        "passInfos.0.Tweak_N67": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Transformed UV 2"
+        },
+        "passInfos.0.Source": {
+          "value": "Mesh UV 0",
+          "isDefine": true,
+          "type": "defineSelect",
+          "options": [
+            "Mesh UV 0",
+            "Mesh UV 1",
+            "Screen UV",
+            "Transformed UV 2"
+          ],
+          "label": "Source"
+        },
+        "passInfos.0.uv2Scale.value": null,
+        "passInfos.0.uv2Scale.hidden": true,
+        "passInfos.0.uv2Scale.enabledBy": "Tweak_N67",
+        "passInfos.0.uv2Scale.label": "Scale",
+        "passInfos.0.uv2Offset.value": null,
+        "passInfos.0.uv2Offset.hidden": true,
+        "passInfos.0.uv2Offset.enabledBy": "Tweak_N67",
+        "passInfos.0.uv2Offset.label": "Offset",
+        "passInfos.0.uv2EnableAnimation": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Animation"
+        },
+        "passInfos.0.Tweak_N11": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Transformed UV 3"
+        },
+        "passInfos.0.uv3Scale.value": null,
+        "passInfos.0.uv3Scale.hidden": true,
+        "passInfos.0.uv3Scale.enabledBy": "Tweak_N11",
+        "passInfos.0.uv3Scale.label": "Scale",
+        "passInfos.0.uv3Offset.value": null,
+        "passInfos.0.uv3Offset.hidden": true,
+        "passInfos.0.uv3Offset.enabledBy": "Tweak_N11",
+        "passInfos.0.uv3Offset.label": "Offset",
+        "passInfos.0.uv3EnableAnimation": {
+          "value": false,
+          "isDefine": true,
+          "type": "define",
+          "label": "Animation"
+        },
+        "passInfos.0.alphaTestThreshold.value": null,
+        "passInfos.0.alphaTestThreshold.hidden": true,
+        "passInfos.0.alphaTestThreshold.enabledBy": "uv3EnableAnimation",
+        "passInfos.0.alphaTestThreshold.label": "Alpha Test Threshold",
+        "passInfos.0.alphaTestThreshold.min": 0,
+        "passInfos.0.alphaTestThreshold.max": 1,
+        "passInfos.0.Port_Default_N204": 1,
+        "passInfos.0.Port_Default_N369": {
+          "x": 1,
+          "y": 1,
+          "z": 1,
+          "w": 1
+        },
+        "passInfos.0.PreviewEnabled": 0,
+        "passInfos.0.depthWrite": true,
+        "passInfos.0.depthTest": true,
+        "passInfos.0.depthFunction": {
+          "value": "LessEqual",
+          "type": "enum",
+          "enumType": "Editor.Assets.DepthFunction",
+          "options": [
+            "Never",
+            "Less",
+            "Equal",
+            "LessEqual",
+            "Greater",
+            "NotEqual",
+            "GreaterEqual",
+            "Always"
+          ]
+        },
+        "passInfos.0.twoSided": false,
+        "passInfos.0.cullMode": {
+          "value": "Back",
+          "type": "enum",
+          "enumType": "Editor.Assets.CullMode",
+          "options": [
+            "Front",
+            "Back",
+            "FrontAndBack"
+          ]
+        },
+        "passInfos.0.blendMode": {
+          "value": "Disabled",
+          "type": "enum",
+          "enumType": "Editor.Assets.BlendMode",
+          "options": [
+            "Disabled",
+            "Normal",
+            "Multiply",
+            "MultiplyLegacy",
+            "Add",
+            "AddLegacy",
+            "PremultipliedAlpha",
+            "Glass",
+            "ColoredGlass",
+            "AlphaTest",
+            "AlphaToCoverage",
+            "Screen",
+            "Min",
+            "Max",
+            "PremultipliedAlphaAuto",
+            "Custom",
+            "Darken",
+            "ColorBurn",
+            "Lighten",
+            "ColorDodge",
+            "Overlay",
+            "SoftLight",
+            "HardLight",
+            "VividLight",
+            "LinearLight",
+            "PinLight",
+            "HardMix",
+            "Diff",
+            "Exclusion",
+            "Subtract",
+            "Hue",
+            "Saturation",
+            "Color",
+            "Luminosity",
+            "Average",
+            "Negation",
+            "HardReflect",
+            "HardGlow",
+            "HardPhoenix",
+            "Realistic",
+            "Division",
+            "Bright",
+            "Forgray",
+            "NotBright",
+            "Intense"
+          ]
+        },
+        "passInfos.0.polygonOffset": {
+          "x": 0,
+          "y": 0
+        },
+        "passInfos.0.frustumCulling": {
+          "value": "Auto",
+          "type": "enum",
+          "enumType": "Editor.Assets.FrustumCullMode",
+          "options": [
+            "Auto",
+            "Extend"
+          ]
+        },
+        "passInfos.0.instanceCount": 1,
+        "passInfos.0.id": "25cc76d0-946c-44a3-96f6-dd0c951f7237",
+        "passInfos.0.type": "PassInfo",
+        "name": "Trail_Color",
+        "fileMeta.id": "af111348-59a8-4947-b22b-74bdde90323c",
+        "id": "40fd8007-2d47-490d-8e19-97a79e70b6ed",
+        "type": "Material"
       }
     }
   ]

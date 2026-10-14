@@ -71,6 +71,10 @@ export class GameController extends BaseScriptComponent {
   @input
   ringMaterial?: Material;
 
+  // Material used for the painted trail/lining segments (optional).
+  @input
+  trailMaterial?: Material;
+
   private readonly fullCircle = Math.PI * 2;
   private readonly hazardOffsets = [0, (Math.PI * 2) / 3, (Math.PI * 4) / 3];
   private readonly degToRad = Math.PI / 180;
@@ -78,10 +82,10 @@ export class GameController extends BaseScriptComponent {
 
   private hazards: SceneObject[] = [];
   private trailSegments: SceneObject[] = [];
-  private visibleTrailSegments = 0;
+  private segmentCovered: boolean[] = [];
+  private coveredCount = 0;
   private playerAngle = 0;
   private hazardRotation = 0;
-  private coveredDistance = 0;
   private isJumping = false;
   private jumpElapsed = 0;
   private state: "ready" | "playing" | "gameOver" | "complete" = "ready";
@@ -92,11 +96,15 @@ export class GameController extends BaseScriptComponent {
   private gameOverText: Text = null;
 
   onAwake() {
+    this.createEvent("OnStartEvent").bind(this.onStart.bind(this));
     this.createEvent("UpdateEvent").bind(this.onUpdate.bind(this));
     this.createEvent("TapEvent").bind(this.onTap.bind(this));
     this.cacheReferences();
     this.createProgressTrail();
     this.applySizes();
+  }
+
+  private onStart() {
     this.prepareStartScreen();
   }
 
@@ -108,6 +116,9 @@ export class GameController extends BaseScriptComponent {
 
     if (this.gameOverUI) {
       this.gameOverText = this.gameOverUI.getComponent("Component.Text") as Text;
+    }
+    if (!this.gameOverText) {
+      print("GameController: 'GameOver UI' needs a Text component; title and result messages will not show.");
     }
   }
 
@@ -145,20 +156,26 @@ export class GameController extends BaseScriptComponent {
     if (this.state !== "playing") return;
 
     const deltaTime = getDeltaTime();
-    const playerStep = this.playerSpeed * deltaTime;
-    this.playerAngle = this.wrapAngle(this.playerAngle + playerStep);
+    this.playerAngle = this.wrapAngle(this.playerAngle + this.playerSpeed * deltaTime);
     this.hazardRotation = this.wrapAngle(this.hazardRotation - this.hazardSpeed * deltaTime);
-    this.coveredDistance = Math.min(this.fullCircle, this.coveredDistance + playerStep);
 
     const playerRadius = this.getPlayerRadius(deltaTime);
     this.placeOnRing(this.playerTransform, this.player, this.playerAngle, playerRadius, true);
     this.placeHazards();
-    this.revealProgressTrail();
-    this.updateRingCoverage();
 
     if (this.hasCollided(playerRadius)) {
       this.endGame();
-    } else if (this.coveredDistance >= this.fullCircle) {
+      return;
+    }
+
+    // Only grounded travel paints the track pink. Segments passed while jumping stay red
+    // and must be run over later, so the round continues until the whole ring is pink.
+    if (!this.isJumping) {
+      this.paintSegmentAt(this.playerAngle);
+    }
+    this.updateRingCoverage();
+
+    if (this.coveredCount >= this.trailSegments.length) {
       this.state = "complete";
       this.showMessage("RING COMPLETE!\nTAP TO RESTART");
     }
@@ -223,8 +240,8 @@ export class GameController extends BaseScriptComponent {
   }
 
   private updateRingCoverage() {
-    if (!this.ringMaterial) return;
-    (this.ringMaterial.mainPass as any).coverage = this.coveredDistance / this.fullCircle;
+    if (!this.ringMaterial || this.trailSegments.length === 0) return;
+    (this.ringMaterial.mainPass as any).coverage = this.coveredCount / this.trailSegments.length;
   }
 
   private createProgressTrail() {
@@ -248,34 +265,42 @@ export class GameController extends BaseScriptComponent {
       this.placeOnRing(transform, segment, angle, this.ringRadius, true);
 
       const image = segment.getComponentInDescendants("Component.Image") as Image;
-      if (image) (image as any).renderOrder = -1;
+      if (image) {
+        (image as any).renderOrder = -1;
+        if (this.trailMaterial) {
+          image.mainMaterial = this.trailMaterial;
+        }
+      }
 
       this.trailSegments.push(segment);
     }
   }
 
-  private revealProgressTrail() {
+  // Paint the segment under the player's grounded position, if it is not already pink.
+  private paintSegmentAt(angle: number) {
     const total = this.trailSegments.length;
-    // Round up so a segment appears as soon as any of its arc is covered.
-    const targetCount = Math.min(total, Math.ceil((this.coveredDistance / this.fullCircle) * total));
+    if (total === 0) return;
 
-    while (this.visibleTrailSegments < targetCount) {
-      this.trailSegments[this.visibleTrailSegments].enabled = true;
-      this.visibleTrailSegments++;
-    }
+    const offset = this.wrapAngle(angle - this.startAngleDegrees * this.degToRad);
+    const index = Math.min(total - 1, Math.floor((offset / this.fullCircle) * total));
+    if (this.segmentCovered[index]) return;
+
+    this.segmentCovered[index] = true;
+    this.trailSegments[index].enabled = true;
+    this.coveredCount++;
   }
 
   private resetRound() {
     this.playerAngle = this.startAngleDegrees * this.degToRad;
     this.hazardRotation = 0;
-    this.coveredDistance = 0;
     this.isJumping = false;
     this.jumpElapsed = 0;
 
     for (let index = 0; index < this.trailSegments.length; index++) {
       this.trailSegments[index].enabled = false;
+      this.segmentCovered[index] = false;
     }
-    this.visibleTrailSegments = 0;
+    this.coveredCount = 0;
 
     this.placeOnRing(this.playerTransform, this.player, this.playerAngle, this.ringRadius, true);
     this.placeHazards();
@@ -291,6 +316,8 @@ export class GameController extends BaseScriptComponent {
   private startGame() {
     this.state = "playing";
     this.resetRound();
+    this.paintSegmentAt(this.playerAngle);
+    this.updateRingCoverage();
     this.hideMessage();
   }
 

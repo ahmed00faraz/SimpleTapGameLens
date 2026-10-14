@@ -39,7 +39,6 @@
     horizontalRadiusMultiplier: false
     jumpDepth: false
     jumpDuration: false
-    obstacle: false
     player: false
     playerSpeed: false
     ringMaterial: false
@@ -62,7 +61,6 @@
       hazardOne: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       hazardTwo: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       hazardThree: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
-      obstacle: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       gameOverUI: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       ringRadius: 0.350000
       startAngleDegrees: !<float> 180.000000
@@ -87,16 +85,15 @@
     - // @input SceneObject hazardOne
     - // @input SceneObject hazardTwo
     - // @input SceneObject hazardThree
-    - // @input SceneObject obstacle
     - // @input SceneObject gameOverUI
     - // @input float ringRadius = 0.35
     - // @input float startAngleDegrees = 60
     - // @input float playerSpeed = 1.8
     - // @input float hazardSpeed = 0.7
     - // @input float jumpDepth = 0.13
-    - // @input float jumpDuration = 0.42
+    - // @input float jumpDuration = 0.5
     - // @input float collisionAngleDegrees = 11
-    - // @input float collisionRadius = 0.065
+    - // @input float collisionRadius = 0.055
     - // @input float safeJumpDepth = 0.065
     - // @input float demonSize = 0.16
     - // @input float trailSegmentCount = 96
